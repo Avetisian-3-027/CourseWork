@@ -27,7 +27,6 @@ namespace LibraryApp
             string databasePath = Path.Combine(dataFolder, "Library.db");
             string connectionString = $"Data Source={databasePath}";
 
-            // явно указываем сборку миграций Ч помогает EF искать миграции в рантайме.
             var migrationsAssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
 
             var options = new DbContextOptionsBuilder<LibraryContext>()
@@ -38,25 +37,12 @@ namespace LibraryApp
 
             try
             {
-                var migrationsAssembly = context.GetService<IMigrationsAssembly>();
-                var migrations = migrationsAssembly?.Migrations;
-
-                if (migrations == null || !migrations.Any())
-                {
-                    // ћиграции не найдены в рантайме Ч создаЄм схему из модели
-                    context.Database.EnsureCreated();
-                }
-                else
-                {
-                    // ѕримен€ем миграции
-                    context.Database.Migrate();
-                }
+                context.Database.Migrate();
             }
             catch (Exception ex)
             {
-                // ‘оллбек: гарантируем, что Ѕƒ хот€ бы создана.
-                try { context.Database.EnsureCreated(); } catch { }
-                Console.Error.WriteLine($"Database initialization failed: {ex.Message}");
+                Console.Error.WriteLine($"Migrate failed: {ex.Message}. Falling back to EnsureCreated().");
+                try { context.Database.EnsureCreated(); } catch (Exception inner) { Console.Error.WriteLine($"EnsureCreated failed: {inner.Message}"); }
             }
 
             var bookService = new BookService(context);

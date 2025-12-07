@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LibraryApp.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class RegenInitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
