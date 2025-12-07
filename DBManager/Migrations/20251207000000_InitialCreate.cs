@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace LibraryApp.Infrastructure.Migrations
+namespace LibraryApp.Migrations
 {
     public partial class InitialCreate : Migration
     {

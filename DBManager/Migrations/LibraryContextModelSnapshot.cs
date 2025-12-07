@@ -1,21 +1,20 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using LibraryApp.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace LibraryApp.Infrastructure.Migrations
+namespace LibraryApp.Migrations
 {
-    [DbContext(typeof(LibraryContext))]
+    [DbContext(typeof(LibraryApp.Infrastructure.LibraryContext))]
     partial class LibraryContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "EFCore");
+                .HasAnnotation("ProductVersion", "EFCore")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             modelBuilder.Entity("LibraryApp.Domain.Author", b =>
             {
@@ -58,7 +57,8 @@ namespace LibraryApp.Infrastructure.Migrations
                 b.Property<string>("Title")
                     .IsRequired();
 
-                b.Property<int>("Year");
+                b.Property<int>("Year")
+                    .IsRequired();
 
                 b.HasKey("Id");
 
@@ -81,7 +81,6 @@ namespace LibraryApp.Infrastructure.Migrations
                     .HasForeignKey("GenreId")
                     .OnDelete(DeleteBehavior.Cascade);
             });
-#pragma warning restore 612, 618
         }
     }
 }
