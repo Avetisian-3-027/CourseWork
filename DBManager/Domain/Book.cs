@@ -1,10 +1,13 @@
 using LibraryApp.Domain;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryApp.Domain
 {
     public class Book
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         public string Title { get; set; } = string.Empty;
         public uint Year { get; set; }
 
@@ -15,3 +18,4 @@ namespace LibraryApp.Domain
         public Genre Genre { get; set; } = null!;
     }
 }
+
