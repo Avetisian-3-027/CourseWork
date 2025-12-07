@@ -3,11 +3,8 @@ using LibraryApp.Infrastructure;
 using LibraryApp.Services;
 using LibraryApp.UI;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -27,16 +24,18 @@ namespace LibraryApp
             string databasePath = Path.Combine(dataFolder, "Library.db");
             string connectionString = $"Data Source={databasePath}";
 
-            var migrationsAssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+            // используем сборку, где объявлен LibraryContext — это стабильнее при рефакторинге
+            var migrationsAssemblyName = typeof(LibraryContext).Assembly.GetName().Name;
 
             var options = new DbContextOptionsBuilder<LibraryContext>()
                 .UseSqlite(connectionString, b => b.MigrationsAssembly(migrationsAssemblyName))
                 .Options;
 
-            var context = new LibraryContext(options);
+            using var context = new LibraryContext(options);
 
             try
             {
+                // Применяем миграции; при ошибке падаем к EnsureCreated (как запасной вариант)
                 context.Database.Migrate();
             }
             catch (Exception ex)

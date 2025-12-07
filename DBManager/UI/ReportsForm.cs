@@ -1,4 +1,4 @@
-﻿using LibraryApp.Services;
+using LibraryApp.Services;
 using System;
 using System.Linq;
 using System.Text;
@@ -10,8 +10,11 @@ namespace LibraryApp.UI
     public class ReportsForm : Form
     {
         private readonly ReportService _reportService;
-        private ListBox _lstReports;
-        private Button _btnLoadStats, _btnOldestBook, _btnTopAuthor, _btnSaveToCsv;
+        private ListBox _lstReports = null!;
+        private Button _btnLoadStats = null!;
+        private Button _btnOldestBook = null!;
+        private Button _btnTopAuthor = null!;
+        private Button _btnSaveToCsv = null!;
         private string currentReport = "";
 
         public ReportsForm(ReportService reportService)
@@ -96,7 +99,7 @@ namespace LibraryApp.UI
             _btnSaveToCsv.Enabled = _lstReports.Items.Count > 0;
         }
 
-        private void BtnSaveToCsv_Click(object sender, EventArgs e)
+        private void BtnSaveToCsv_Click(object? sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(currentReport))
                 return;

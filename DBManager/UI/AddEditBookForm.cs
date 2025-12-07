@@ -23,7 +23,7 @@ namespace LibraryApp.UI
             _genreService = genreService;
             _bookId = bookId;
 
-            Text = _bookId.HasValue ? "Редагувати книгу" : "Додати книгу";
+            Text = _bookId.HasValue ? "Р РµРґР°РіСѓРІР°С‚Рё РєРЅРёРіСѓ" : "Р”РѕРґР°С‚Рё РєРЅРёРіСѓ";
             this.ShowIcon = false;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -41,12 +41,12 @@ namespace LibraryApp.UI
             _txtGenre = new TextBox { Left = 120, Top = 60, Width = 200 };
             _txtYear = new TextBox { Left = 120, Top = 100, Width = 200 };
             _txtAuthor = new TextBox { Left = 120, Top = 140, Width = 200 };
-            _btnSave = new Button { Text = "Зберегти", Left = 120, Top = 180, Width = 100, Height = 30 };
+            _btnSave = new Button { Text = "Р—Р±РµСЂРµРіС‚Рё", Left = 120, Top = 180, Width = 100, Height = 30 };
 
-            Controls.Add(new Label { Text = "Назва:", Left = 20, Top = 20 });
-            Controls.Add(new Label { Text = "Жанр:", Left = 20, Top = 60 });
-            Controls.Add(new Label { Text = "Рік:", Left = 20, Top = 100 });
-            Controls.Add(new Label { Text = "Автор:", Left = 20, Top = 140 });
+            Controls.Add(new Label { Text = "РќР°Р·РІР°:", Left = 20, Top = 20 });
+            Controls.Add(new Label { Text = "Р–Р°РЅСЂ:", Left = 20, Top = 60 });
+            Controls.Add(new Label { Text = "Р С–Рє:", Left = 20, Top = 100 });
+            Controls.Add(new Label { Text = "РђРІС‚РѕСЂ:", Left = 20, Top = 140 });
             Controls.AddRange(new Control[] { _txtTitle, _txtGenre, _txtYear, _txtAuthor, _btnSave });
 
             _btnSave.Click += async (s, e) => await SaveAsync();
@@ -72,18 +72,17 @@ namespace LibraryApp.UI
                 string.IsNullOrWhiteSpace(_txtYear.Text) ||
                 string.IsNullOrWhiteSpace(_txtAuthor.Text))
             {
-                MessageBox.Show("Усі поля обов'язкові");
+                MessageBox.Show("РЈСЃС– РїРѕР»СЏ РѕР±РѕРІ'СЏР·РєРѕРІС–");
                 return;
             }
 
-            if (!uint.TryParse(_txtYear.Text, out uint year))
+            if (!int.TryParse(_txtYear.Text, out int year))
             {
-                MessageBox.Show("Рік повинен бути числом!", "Помилка вводу", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Р С–Рє РїРѕРІРёРЅРµРЅ Р±СѓС‚Рё С‡РёСЃР»РѕРј!", "РџРѕРјРёР»РєР° РІРІРѕРґСѓ", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _txtYear.Focus();
                 return;
             }
 
-            // Поиск существующих сущностей; если не найдены — создаём новые объекты, но НЕ добавляем их сразу в БД.
             var genre = (await _genreService.GetAllAsync())
                 .FirstOrDefault(g => g.GenreType.Equals(_txtGenre.Text, StringComparison.OrdinalIgnoreCase));
             if (genre == null)
@@ -99,44 +98,82 @@ namespace LibraryApp.UI
                 var book = await _bookService.GetByIdAsync(_bookId.Value);
                 if (book != null)
                 {
-                    book.Title = _txtTitle.Text;
-                    book.Genre = genre;
-                    book.Year = year;
-                    book.Author = author;
-
-                    // Обновляем книгу; EF Core сохранит нужные связи.
-                    await _bookService.UpdateAsync(book);
-
-                    // Обновляем/добавляем автора и жанр только при необходимости.
+                    // РµСЃР»Рё СЃРІСЏР·Р°РЅРЅС‹Рµ СЃСѓС‰РЅРѕСЃС‚Рё РЅРѕРІС‹Рµ вЂ” СЃРЅР°С‡Р°Р»Р° СЃРѕС…СЂР°РЅРёС‚СЊ РёС… С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ Id
                     if (author.Id == 0)
-                        await _authorService.AddAsync(author);
+                        await _author_service_AddOrUpdate(author);
                     else
                         await _authorService.UpdateAsync(author);
 
                     if (genre.Id == 0)
-                        await _genreService.AddAsync(genre);
+                        await _genre_service_AddOrUpdate(genre);
                     else
                         await _genreService.UpdateAsync(genre);
+
+                    // Р·Р°С‚РµРј РЅР°Р·РЅР°С‡Р°РµРј Рё РѕР±РЅРѕРІР»СЏРµРј РєРЅРёРіСѓ (РёСЃРїРѕР»СЊР·СѓРµРј Id, С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ FK-РїСЂРѕР±Р»РµРј)
+                    book.Title = _txtTitle.Text;
+                    book.AuthorId = author.Id;
+                    book.GenreId = genre.Id;
+                    book.Year = year;
+                    // РµСЃР»Рё С…РѕС‚РёС‚Рµ вЂ” РјРѕР¶РЅРѕ С‚Р°РєР¶Рµ РїСЂРёСЃРІРѕРёС‚СЊ РЅР°РІРёРіР°С†РёРѕРЅРЅС‹Рµ СЃРІРѕР№СЃС‚РІР°:
+                    book.Author = author;
+                    book.Genre = genre;
+
+                    await _bookService.UpdateAsync(book);
                 }
             }
             else
             {
-                var book = new Book
+                // Р”Р»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ РЅРѕРІРѕР№ РєРЅРёРіРё EF РєРѕСЂСЂРµРєС‚РЅРѕ СЃРѕР·РґР°СЃС‚ РЅРѕРІС‹Рµ СЃРІСЏР·Р°РЅРЅС‹Рµ СЃСѓС‰РЅРѕСЃС‚Рё,
+                // РЅРѕ РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№, РµСЃР»Рё РІС‹ С…РѕС‚РёС‚Рµ СЏРІРЅРѕ СЃРѕС…СЂР°РЅРёС‚СЊ Р°РІС‚РѕСЂ/Р¶Р°РЅСЂ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Id вЂ” РјРѕР¶РЅРѕ СЃРґРµР»Р°С‚СЊ СЌС‚Рѕ.
+                if (author.Id == 0 && genre.Id == 0)
                 {
-                    Title = _txtTitle.Text,
-                    Genre = genre,
-                    Year = year,
-                    Author = author
-                };
+                    var book = new Book
+                    {
+                        Title = _txtTitle.Text,
+                        Genre = genre,
+                        Year = year,
+                        Author = author
+                    };
+                    await _bookService.AddAsync(book);
+                }
+                else
+                {
+                    // РµСЃР»Рё РѕРґРёРЅ РёР· СЃРІСЏР·РЅС‹С… СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚, СѓР±РµРґРёРјСЃСЏ, С‡С‚Рѕ Сѓ РЅРёС… РµСЃС‚СЊ Id
+                    if (author.Id == 0)
+                        await _author_service_AddOrUpdate(author);
+                    if (genre.Id == 0)
+                        await _genre_service_AddOrUpdate(genre);
 
-                // ВАЖНО: не вызываем здесь отдельно _authorService.AddAsync/ _genreService.AddAsync,
-                // если объекты `author` и `genre` являются новыми (Id == 0).
-                // При добавлении книги EF Core вставит связанные новые сущности автоматически.
-                await _bookService.AddAsync(book);
+                    var book = new Book
+                    {
+                        Title = _txtTitle.Text,
+                        GenreId = genre.Id,
+                        AuthorId = author.Id,
+                        Year = year
+                    };
+                    await _bookService.AddAsync(book);
+                }
             }
 
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        // Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ Р»РѕРєР°Р»СЊРЅС‹Рµ РјРµС‚РѕРґС‹, С‡С‚РѕР±С‹ РЅРµ РґСѓР±Р»РёСЂРѕРІР°С‚СЊ Р»РѕРіРёРєСѓ СЃРѕС…СЂР°РЅРµРЅРёСЏ
+        private async System.Threading.Tasks.Task _author_service_AddOrUpdate(Author author)
+        {
+            if (author.Id == 0)
+                await _authorService.AddAsync(author);
+            else
+                await _authorService.UpdateAsync(author);
+        }
+
+        private async System.Threading.Tasks.Task _genre_service_AddOrUpdate(Genre genre)
+        {
+            if (genre.Id == 0)
+                await _genreService.AddAsync(genre);
+            else
+                await _genreService.UpdateAsync(genre);
         }
     }
 }

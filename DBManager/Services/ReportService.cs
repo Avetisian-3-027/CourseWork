@@ -30,6 +30,7 @@ namespace LibraryApp.Services
         {
             return await _context.Authors
                 .AsNoTracking()
+                .Include(a => a.Books)
                 .OrderByDescending(a => a.Books.Count)
                 .FirstOrDefaultAsync();
         }

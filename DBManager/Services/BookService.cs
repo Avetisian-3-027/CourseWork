@@ -50,7 +50,10 @@ namespace LibraryApp.Services
             
 
         public async Task<Book?> GetByIdAsync(int id) =>
-            await _context.Books.Include(b => b.Author).FirstOrDefaultAsync(b => b.Id == id);
+            await _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Genre)
+                .FirstOrDefaultAsync(b => b.Id == id);
 
         public async Task UpdateAsync(Book entity)
         {
