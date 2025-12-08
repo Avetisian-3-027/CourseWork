@@ -1,8 +1,4 @@
 using LibraryApp.Services;
-using System;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace LibraryApp.UI
 {
@@ -23,7 +19,7 @@ namespace LibraryApp.UI
             _reportService = reportService;
             _genreService = genreService;
 
-            Text = "Á³áë³îòåêà";
+            Text = "Ð‘Ñ–Ð±Ð»Ñ–Ð¾Ñ‚ÐµÐºÐ°";
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -45,9 +41,9 @@ namespace LibraryApp.UI
                 Height = 380
             };
 
-            var tabBooks = new TabPage("Êíèãè");
-            var tabAuthors = new TabPage("Àâòîðè");
-            var tabGenres = new TabPage("Æàíðè");
+            var tabBooks = new TabPage("ÐšÐ½Ð¸Ð³Ð¸");
+            var tabAuthors = new TabPage("ÐÐ²Ñ‚Ð¾Ñ€Ð¸");
+            var tabGenres = new TabPage("Ð–Ð°Ð½Ñ€Ð¸");
 
             tabControl.TabPages.Add(tabBooks);
             tabControl.TabPages.Add(tabAuthors);
@@ -64,10 +60,10 @@ namespace LibraryApp.UI
             };
 
             _lvBooks.Columns.Add("ID", 50);
-            _lvBooks.Columns.Add("Íàçâà", 250);
-            _lvBooks.Columns.Add("Àâòîð", 150);
-            _lvBooks.Columns.Add("Æàíð", 150);
-            _lvBooks.Columns.Add("Ð³ê âèäàííÿ", 100);
+            _lvBooks.Columns.Add("ÐÐ°Ð·Ð²Ð°", 250);
+            _lvBooks.Columns.Add("ÐÐ²Ñ‚Ð¾Ñ€", 150);
+            _lvBooks.Columns.Add("Ð–Ð°Ð½Ñ€", 150);
+            _lvBooks.Columns.Add("Ð Ñ–Ðº Ð²Ð¸Ð´Ð°Ð½Ð½Ñ", 100);
 
             tabBooks.Controls.Add(_lvBooks);
             
@@ -82,8 +78,8 @@ namespace LibraryApp.UI
             };
 
             _lvAuthors.Columns.Add("ID", 50);
-            _lvAuthors.Columns.Add("²ì'ÿ", 200);
-            _lvAuthors.Columns.Add("Ê³ëüê³ñòü êíèã", 150);
+            _lvAuthors.Columns.Add("Ð†Ð¼'Ñ", 200);
+            _lvAuthors.Columns.Add("ÐšÑ–Ð»ÑŒÐºÑ–ÑÑ‚ÑŒ ÐºÐ½Ð¸Ð³", 150);
 
             tabAuthors.Controls.Add(_lvAuthors);
 
@@ -98,15 +94,15 @@ namespace LibraryApp.UI
             };
 
             _lvGenres.Columns.Add("ID", 50);
-            _lvGenres.Columns.Add("Æàíð", 200);
-            _lvGenres.Columns.Add("Ê³ëüê³ñòü êíèã", 150);
+            _lvGenres.Columns.Add("Ð–Ð°Ð½Ñ€", 200);
+            _lvGenres.Columns.Add("ÐšÑ–Ð»ÑŒÐºÑ–ÑÑ‚ÑŒ ÐºÐ½Ð¸Ð³", 150);
 
             tabGenres.Controls.Add(_lvGenres);
 
-            _btnAdd = new Button { Text = "Äîäàòè", Left = 20, Top = 420, Width = 110, Height = 30 };
-            _btnEdit = new Button { Text = "Ðåäàãóâàòè", Left = 140, Top = 420, Width = 110, Height = 30 };
-            _btnDelete = new Button { Text = "Âèäàëèòè", Left = 260, Top = 420, Width = 110, Height = 30 };
-            _btnReports = new Button { Text = "Çâ³òè", Left = 380, Top = 420, Width = 110, Height = 30 };
+            _btnAdd = new Button { Text = "Ð”Ð¾Ð´Ð°Ñ‚Ð¸", Left = 20, Top = 420, Width = 110, Height = 30 };
+            _btnEdit = new Button { Text = "Ð ÐµÐ´Ð°Ð³ÑƒÐ²Ð°Ñ‚Ð¸", Left = 140, Top = 420, Width = 110, Height = 30 };
+            _btnDelete = new Button { Text = "Ð’Ð¸Ð´Ð°Ð»Ð¸Ñ‚Ð¸", Left = 260, Top = 420, Width = 110, Height = 30 };
+            _btnReports = new Button { Text = "Ð—Ð²Ñ–Ñ‚Ð¸", Left = 380, Top = 420, Width = 110, Height = 30 };
 
             _btnAdd.Click += async (s, e) => await AddBookAsync();
             _btnEdit.Click += async (s, e) => await EditBookAsync();

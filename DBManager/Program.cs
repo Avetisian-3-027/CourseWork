@@ -1,12 +1,7 @@
-using LibraryApp.Domain;
 using LibraryApp.Infrastructure;
 using LibraryApp.Services;
 using LibraryApp.UI;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.IO;
-using System.Reflection;
-using System.Windows.Forms;
 
 namespace LibraryApp
 {

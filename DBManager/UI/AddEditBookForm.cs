@@ -1,8 +1,5 @@
 using LibraryApp.Domain;
 using LibraryApp.Services;
-using System;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace LibraryApp.UI
 {
@@ -109,12 +106,10 @@ namespace LibraryApp.UI
                     else
                         await _genreService.UpdateAsync(genre);
 
-                    // затем назначаем и обновляем книгу (используем Id, чтобы избежать FK-проблем)
                     book.Title = _txtTitle.Text;
                     book.AuthorId = author.Id;
                     book.GenreId = genre.Id;
                     book.Year = year;
-                    // если хотите — можно также присвоить навигационные свойства:
                     book.Author = author;
                     book.Genre = genre;
 
@@ -123,8 +118,6 @@ namespace LibraryApp.UI
             }
             else
             {
-                // Для добавления новой книги EF корректно создаст новые связанные сущности,
-                // но на всякий случай, если вы хотите явно сохранить автор/жанр для получения Id — можно сделать это.
                 if (author.Id == 0 && genre.Id == 0)
                 {
                     var book = new Book

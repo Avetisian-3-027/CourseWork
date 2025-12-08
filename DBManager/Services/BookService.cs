@@ -1,9 +1,6 @@
 using LibraryApp.Domain;
 using LibraryApp.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LibraryApp.Services
 {
