@@ -24,7 +24,7 @@ namespace LibraryApp
             string databasePath = Path.Combine(dataFolder, "Library.db");
             string connectionString = $"Data Source={databasePath}";
 
-            // используем сборку, где объявлен LibraryContext — это стабильнее при рефакторинге
+            
             var migrationsAssemblyName = typeof(LibraryContext).Assembly.GetName().Name;
 
             var options = new DbContextOptionsBuilder<LibraryContext>()
@@ -35,7 +35,7 @@ namespace LibraryApp
 
             try
             {
-                // Применяем миграции; при ошибке падаем к EnsureCreated (как запасной вариант)
+           
                 context.Database.Migrate();
             }
             catch (Exception ex)

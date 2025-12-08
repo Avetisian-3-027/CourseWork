@@ -20,8 +20,7 @@ namespace LibraryApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Sqlite:Autoincrement", true);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -36,8 +35,7 @@ namespace LibraryApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Sqlite:Autoincrement", true);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("INTEGER");
@@ -65,8 +63,7 @@ namespace LibraryApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Sqlite:Autoincrement", true);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("GenreType")
                         .IsRequired()

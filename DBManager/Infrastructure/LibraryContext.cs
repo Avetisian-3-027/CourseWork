@@ -21,8 +21,7 @@ namespace LibraryApp.Infrastructure
             {
                 eb.HasKey(a => a.Id);
                 eb.Property(a => a.Id)
-                  .ValueGeneratedOnAdd()
-                  .HasAnnotation("Sqlite:Autoincrement", true);
+                  .ValueGeneratedOnAdd();
                 eb.Property(a => a.Name).IsRequired();
             });
 
@@ -30,8 +29,7 @@ namespace LibraryApp.Infrastructure
             {
                 eb.HasKey(g => g.Id);
                 eb.Property(g => g.Id)
-                  .ValueGeneratedOnAdd()
-                  .HasAnnotation("Sqlite:Autoincrement", true);
+                  .ValueGeneratedOnAdd();
                 eb.Property(g => g.GenreType).IsRequired();
             });
 
@@ -39,12 +37,10 @@ namespace LibraryApp.Infrastructure
             {
                 eb.HasKey(b => b.Id);
                 eb.Property(b => b.Id)
-                  .ValueGeneratedOnAdd()
-                  .HasAnnotation("Sqlite:Autoincrement", true);
+                  .ValueGeneratedOnAdd();
 
                 eb.Property(b => b.Title).IsRequired();
 
-                // Явный тип столбца для Year (синхронизация с SQLite INTEGER)
                 eb.Property(b => b.Year)
                     .IsRequired()
                     .HasColumnType("INTEGER");
@@ -62,26 +58,4 @@ namespace LibraryApp.Infrastructure
         }
     }
 
-    // Design-time factory для инструментов EF Core
-    public class LibraryContextFactory : IDesignTimeDbContextFactory<LibraryContext>
-    {
-        public LibraryContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<LibraryContext>();
-
-            var baseDir = AppContext.BaseDirectory ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-            var dataFolder = Path.Combine(baseDir, "Data");
-            if (!Directory.Exists(dataFolder))
-                Directory.CreateDirectory(dataFolder);
-
-            var databasePath = Path.Combine(dataFolder, "Library.db");
-            var connectionString = $"Data Source={databasePath}";
-
-            var migrationsAssembly = typeof(LibraryContext).Assembly.GetName().Name;
-
-            optionsBuilder.UseSqlite(connectionString, b => b.MigrationsAssembly(migrationsAssembly));
-
-            return new LibraryContext(optionsBuilder.Options);
-        }
-    }
 }

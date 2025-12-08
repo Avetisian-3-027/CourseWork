@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryApp.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20251207234307_Initial")]
+    [Migration("20251207235949_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -23,8 +23,7 @@ namespace LibraryApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Sqlite:Autoincrement", true);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -39,8 +38,7 @@ namespace LibraryApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Sqlite:Autoincrement", true);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("INTEGER");
@@ -68,8 +66,7 @@ namespace LibraryApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Sqlite:Autoincrement", true);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("GenreType")
                         .IsRequired()

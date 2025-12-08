@@ -5,7 +5,6 @@ namespace LibraryApp.Domain
 {
     public class Genre
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public string GenreType { get; set; } = string.Empty;
