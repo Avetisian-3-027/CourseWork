@@ -90,22 +90,31 @@ namespace LibraryApp.UI
             if (author == null)
                 author = new Author { Name = _txtAuthor.Text };
 
+            // Змінні для збереження старих ідентифікаторів при редагуванні
+            int? oldAuthorId = null;
+            int? oldGenreId = null;
+
             if (_bookId.HasValue)
             {
                 var book = await _bookService.GetByIdAsync(_bookId.Value);
                 if (book != null)
                 {
-                    // если связанные сущности новые — сначала сохранить их чтобы получить Id
+                    // Зберігаємо старі ID для подальшої перевірки
+                    oldAuthorId = book.AuthorId;
+                    oldGenreId = book.GenreId;
+
+                    // якщо пов'язані сутності нові — спочатку зберегти їх щоб отримати Id
                     if (author.Id == 0)
-                        await _author_service_AddOrUpdate(author);
+                        await _authorService.AddAsync(author);
                     else
                         await _authorService.UpdateAsync(author);
 
                     if (genre.Id == 0)
-                        await _genre_service_AddOrUpdate(genre);
+                        await _genreService.AddAsync(genre);
                     else
                         await _genreService.UpdateAsync(genre);
 
+                    // потім призначаємо і оновлюємо книгу
                     book.Title = _txtTitle.Text;
                     book.AuthorId = author.Id;
                     book.GenreId = genre.Id;
@@ -114,10 +123,21 @@ namespace LibraryApp.UI
                     book.Genre = genre;
 
                     await _bookService.UpdateAsync(book);
+
+                    // Після успішного оновлення книги перевіряємо та видаляємо старі сутності, якщо вони більше не використовуються
+                    if (oldAuthorId.HasValue && oldAuthorId.Value != author.Id)
+                    {
+                        await _authorService.DeleteAuthorIfNoBooksAsync(oldAuthorId.Value);
+                    }
+                    if (oldGenreId.HasValue && oldGenreId.Value != genre.Id)
+                    {
+                        await _genreService.DeleteGenreIfNoBooksAsync(oldGenreId.Value);
+                    }
                 }
             }
             else
             {
+                // Для додавання нової книги
                 if (author.Id == 0 && genre.Id == 0)
                 {
                     var book = new Book
@@ -131,11 +151,11 @@ namespace LibraryApp.UI
                 }
                 else
                 {
-                    // если один из связных уже существует, убедимся, что у них есть Id
+                    // якщо один з зв'язаних вже існує, переконаємось, що у них є Id
                     if (author.Id == 0)
-                        await _author_service_AddOrUpdate(author);
+                        await _authorService.AddAsync(author);
                     if (genre.Id == 0)
-                        await _genre_service_AddOrUpdate(genre);
+                        await _genreService.AddAsync(genre);
 
                     var book = new Book
                     {
@@ -152,21 +172,5 @@ namespace LibraryApp.UI
             Close();
         }
 
-        // Вспомогательные локальные методы, чтобы не дублировать логику сохранения
-        private async System.Threading.Tasks.Task _author_service_AddOrUpdate(Author author)
-        {
-            if (author.Id == 0)
-                await _authorService.AddAsync(author);
-            else
-                await _authorService.UpdateAsync(author);
-        }
-
-        private async System.Threading.Tasks.Task _genre_service_AddOrUpdate(Genre genre)
-        {
-            if (genre.Id == 0)
-                await _genreService.AddAsync(genre);
-            else
-                await _genreService.UpdateAsync(genre);
-        }
     }
 }
